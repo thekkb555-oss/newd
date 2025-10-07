@@ -1,21 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(request: NextRequest) {
+  let videoId: string | undefined;
+  
   try {
-    // Parse request body
-    let videoId: string;
-    try {
-      const body = await request.json();
-      videoId = body.videoId;
-    } catch (parseError) {
-      console.error('Failed to parse request body:', parseError);
-      return NextResponse.json(
-        { error: 'Invalid request body', isValid: false },
-        { status: 400 }
-      );
-    }
+    // Parse request body with better error handling
+    const body = await request.json();
+    videoId = body?.videoId;
     
-    if (!videoId) {
+    console.log('Received request body:', body);
+    console.log('Video ID:', videoId);
+    
+    if (!videoId || typeof videoId !== 'string') {
+      console.error('Invalid or missing video ID');
       return NextResponse.json(
         { error: 'Video ID is required', isValid: false },
         { status: 400 }
